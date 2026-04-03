@@ -4,22 +4,24 @@ import lombok.Data;
 
 @Data
 public class Result<T> {
-    private int code;
+    private Integer code;
     private String msg;
     private T data;
 
+    // 成功
     public static <T> Result<T> success(T data) {
-        Result<T> result = new Result<>();
-        result.setCode(ResultCode.SUCCESS.getCode());
-        result.setMsg(ResultCode.SUCCESS.getMsg());
-        result.setData(data);
-        return result;
+        Result<T> r = new Result<>();
+        r.setCode(ResultCode.SUCCESS.getCode());
+        r.setMsg(ResultCode.SUCCESS.getMsg());
+        r.setData(data);
+        return r;
     }
 
+    // 失败
     public static <T> Result<T> error(ResultCode resultCode) {
-        Result<T> result = new Result<>();
-        result.setCode(resultCode.getCode());
-        result.setMsg(resultCode.getMsg());
-        return result;
+        Result<T> r = new Result<>();
+        r.setCode(resultCode.getCode());
+        r.setMsg(resultCode.getMsg());
+        return r;
     }
 }

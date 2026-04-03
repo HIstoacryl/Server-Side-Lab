@@ -1,43 +1,35 @@
 package com.lanhai.hello_server.user;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.lanhai.hello_server.common.Result;
 import com.lanhai.hello_server.common.ResultCode;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserMapper userMapper;
+    // 内存存储，不连数据库
+    private static final Map<String, String> USER_MAP = new HashMap<>();
 
     @Override
     public Result<String> register(UserDTO userDTO) {
-        Long count = userMapper.selectCount(new LambdaQueryWrapper<User>()
-                .eq(User::getUsername, userDTO.getUsername()));
-        if (count > 0) {
+        if (USER_MAP.containsKey(userDTO.getUsername())) {
             return Result.error(ResultCode.USER_HAS_EXISTED);
         }
-        User user = new User();
-        user.setUsername(userDTO.getUsername());
-        user.setPassword(userDTO.getPassword());
-        userMapper.insert(user);
+        USER_MAP.put(userDTO.getUsername(), userDTO.getPassword());
         return Result.success("注册成功");
     }
 
     @Override
     public Result<String> login(UserDTO userDTO) {
-        User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
-                .eq(User::getUsername, userDTO.getUsername()));
-        if (user == null) {
+        String pwd = USER_MAP.get(userDTO.getUsername());
+        if (pwd == null) {
             return Result.error(ResultCode.USER_NOT_EXIST);
         }
-        if (!user.getPassword().equals(userDTO.getPassword())) {
+        if (!pwd.equals(userDTO.getPassword())) {
             return Result.error(ResultCode.PASSWORD_ERROR);
         }
-        String token = UUID.randomUUID().toString().replace("-", "");
-        return Result.success(token);
+        return Result.success("登录成功 token: 123456");
     }
 }

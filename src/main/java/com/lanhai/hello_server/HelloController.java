@@ -1,4 +1,4 @@
-package com.lanhai.hello_server.controller;
+package com.lanhai.hello_server;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;

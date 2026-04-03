@@ -3,8 +3,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/study_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-    username: school
-    password: school
+    username: root
+    password: Wswpr1230
 
 mybatis-plus:
   configuration:

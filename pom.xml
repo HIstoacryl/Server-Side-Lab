@@ -29,11 +29,17 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- MyBatis-Plus 适配SpringBoot3 -->
+		<!-- MyBatis-Plus for SpringBoot 3 -->
 		<dependency>
 			<groupId>com.baomidou</groupId>
 			<artifactId>mybatis-plus-spring-boot3-starter</artifactId>
 			<version>3.5.10</version>
+		</dependency>
+
+		<!-- 解决 Spring Boot 3 Resource 注解找不到 -->
+		<dependency>
+			<groupId>jakarta.annotation</groupId>
+			<artifactId>jakarta.annotation-api</artifactId>
 		</dependency>
 
 		<dependency>

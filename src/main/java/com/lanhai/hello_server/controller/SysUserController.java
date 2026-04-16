@@ -21,6 +21,6 @@ public class SysUserController {
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "5") int pageSize
     ) {
-        return Result.success(sysUserService.getUserPage(pageNum, pageSize));
+        return Result.success();
     }
 }

@@ -1,26 +1,20 @@
 package com.lanhai.hello_server.interceptor;
 
-import com.lanhai.hello_server.common.Result;
-import com.lanhai.hello_server.common.ResultCode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import java.util.Map;
 
+@Component
 public class AuthInterceptor implements HandlerInterceptor {
-
-    private static final Map<String, String> TOKEN_STORE = Map.of(
-            "test-token", "admin"
-    );
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // 拦截逻辑示例：校验token
         String token = request.getHeader("Authorization");
-        if (token == null || !TOKEN_STORE.containsKey(token)) {
-            response.setContentType("application/json;charset=UTF-8");
-            Result<?> result = Result.error(ResultCode.UNAUTHORIZED);
-            new ObjectMapper().writeValue(response.getWriter(), result);
+        if (token == null || !token.startsWith("Bearer ")) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Missing or invalid token");
             return false;
         }
         return true;

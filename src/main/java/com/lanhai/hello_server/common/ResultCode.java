@@ -1,15 +1,17 @@
 package com.lanhai.hello_server.common;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@Getter
-@AllArgsConstructor
 public enum ResultCode {
-    SUCCESS(200, "操作成功"),
-    UNAUTHORIZED(401, "未授权"),
-    FAIL(500, "服务器异常"); // 这里必须有 FAIL
+    SUCCESS(200, "成功"),
+    ERROR(500, "服务器异常");
 
-    private final int code;
-    private final String msg;
+    private int code;
+    private String msg;
+
+    ResultCode(int code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+
+    public int getCode() { return code; }
+    public String getMsg() { return msg; }
 }

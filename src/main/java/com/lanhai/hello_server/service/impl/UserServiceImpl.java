@@ -2,12 +2,15 @@ package com.lanhai.hello_server.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lanhai.hello_server.common.Result;
 import com.lanhai.hello_server.mapper.SysUserMapper;
 import com.lanhai.hello_server.mapper.UserDetailMapper;
 import com.lanhai.hello_server.mapper.UserInfoMapper;
+import com.lanhai.hello_server.security.JwtUtil;
 import com.lanhai.hello_server.service.UserService;
 import com.lanhai.hello_server.vo.UserDetailVO;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,25 +20,19 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Resource
-    private UserDetailMapper userDetailMapper;
-    @Resource
-    private SysUserMapper sysUserMapper;
-    @Resource
-    private UserInfoMapper userInfoMapper;
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
-    @Resource
-    private ObjectMapper objectMapper;
+    @Resource private UserDetailMapper userDetailMapper;
+    @Resource private SysUserMapper sysUserMapper;
+    @Resource private UserInfoMapper userInfoMapper;
+    @Resource private StringRedisTemplate stringRedisTemplate;
+    @Resource private ObjectMapper objectMapper;
+    @Autowired private JwtUtil jwtUtil;
 
-    // 👇 就是加这一行！
     private static final String CACHE_KEY = "user:detail:";
 
     @Override
     public UserDetailVO getUserDetail(Long userId) {
         String key = CACHE_KEY + userId;
         String json = stringRedisTemplate.opsForValue().get(key);
-
         if (StrUtil.isNotBlank(json)) {
             try {
                 return objectMapper.readValue(json, UserDetailVO.class);
@@ -43,7 +40,6 @@ public class UserServiceImpl implements UserService {
                 stringRedisTemplate.delete(key);
             }
         }
-
         UserDetailVO vo = userDetailMapper.selectUserDetail(userId);
         if (vo != null) {
             try {
@@ -66,5 +62,14 @@ public class UserServiceImpl implements UserService {
         sysUserMapper.deleteById(userId);
         userInfoMapper.delete(null);
         stringRedisTemplate.delete(CACHE_KEY + userId);
+    }
+
+    @Override
+    public Result<String> login(String username, String password) {
+        if ("test".equals(username) && "123456".equals(password)) {
+            String jwt = jwtUtil.generateToken(username);
+            return Result.success(jwt);
+        }
+        return Result.error("用户名或密码错误");
     }
 }

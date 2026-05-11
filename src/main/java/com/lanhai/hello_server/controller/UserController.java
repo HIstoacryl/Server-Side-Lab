@@ -1,8 +1,7 @@
 package com.lanhai.hello_server.controller;
 
 import com.lanhai.hello_server.common.Result;
-import com.lanhai.hello_server.service.UserService;
-import com.lanhai.hello_server.vo.UserDetailVO;
+import com.lanhai.hello_server.security.JwtUtil;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,48 +10,33 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Resource
-    private UserService userService;
+    private JwtUtil jwtUtil;
 
-    // ===================== 我给你加的登录、注册接口 =====================
-    /**
-     * 用户登录
-     */
+    // 登录（正常）
     @PostMapping("/login")
     public Result<String> login(@RequestBody UserLoginDTO dto) {
-        // 简单返回成功，仅用于测试拦截是否生效
-        return Result.success("登录成功");
+        if ("test".equals(dto.getUsername()) && "123456".equals(dto.getPassword())) {
+            String jwt = jwtUtil.generateToken(dto.getUsername());
+            return Result.success(jwt);
+        }
+        return Result.error("用户名或密码错误");
     }
 
-    /**
-     * 用户注册
-     */
+    // 注册
     @PostMapping("/register")
     public Result<String> register(@RequestBody UserLoginDTO dto) {
         return Result.success("注册成功");
     }
-    // =================================================================
 
+    // ===================== 【打开这个接口】用来测试 Token =====================
     @GetMapping("/detail/{userId}")
-    public Result<UserDetailVO> detail(@PathVariable Long userId) {
-        return Result.success(userService.getUserDetail(userId));
+    public Result<String> detail(@PathVariable Long userId) {
+        return Result.success("Token验证成功！用户ID：" + userId);
     }
 
-    @GetMapping("/info/{userId}")
-    public Result<?> update(@PathVariable Long userId,
-                            @RequestParam String phone,
-                            @RequestParam String email) {
-        userService.updateUserInfo(userId, phone, email);
-        return Result.success();
-    }
-
-    @DeleteMapping("/{userId}")
-    public Result<?> delete(@PathVariable Long userId) {
-        userService.deleteUser(userId);
-        return Result.success();
-    }
 }
 
-// 登录参数类（不需要新建文件）
+// 登录参数
 class UserLoginDTO {
     private String username;
     private String password;

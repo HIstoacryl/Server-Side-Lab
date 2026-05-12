@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.lanhai.hello_server")
+//@MapperScan("com.lanhai.hello_server")
 public class HelloServerApplication {
 
 	public static void main(String[] args) {

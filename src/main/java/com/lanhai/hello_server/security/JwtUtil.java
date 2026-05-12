@@ -1,51 +1,57 @@
 package com.lanhai.hello_server.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
 
-    @Value("${security.jwt.secret}")
+    @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${security.jwt.expiration-millis}")
-    private long expirationMillis;
+    @Value("${jwt.expiration-millis}")
+    private Long expiration;
 
-    private SecretKey getSignKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    // 生成 JWT
+    // 生成 Token（新版 API，无废弃警告）
     public String generateToken(String username) {
-        Date now = new Date();
-        Date expireDate = new Date(now.getTime() + expirationMillis);
         return Jwts.builder()
                 .subject(username)
-                .issuedAt(now)
-                .expiration(expireDate)
-                .signWith(getSignKey())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getSigningKey())
                 .compact();
     }
 
-    // 解析用户名
+    // 提取用户名（新版 API）
     public String extractUsername(String token) {
-        return extractClaims(token).getSubject();
+        return extractAllClaims(token).getSubject();
     }
 
-    // 解析所有声明
-    public Claims extractClaims(String token) {
+    // 提取声明（新版 API）
+    private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(getSignKey())
+                .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    // 校验 Token
+    public boolean validateToken(String token) {
+        try {
+            extractAllClaims(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

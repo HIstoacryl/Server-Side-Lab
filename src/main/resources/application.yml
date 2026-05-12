@@ -1,17 +1,3 @@
-#spring:
-#  # 这里什么都不要写！不要排除数据源！
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/study_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-#    username: root
-#    password: Wswpr1230
-#
-#mybatis-plus:
-#  configuration:
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-#
-#server:
-#  port: 8080
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -24,6 +10,11 @@ spring:
     port: 6379
     database: 0
 
+  # 这里加一个假的 API Key，只为启动项目！
+  ai:
+    dashscope:
+      api-key: "fake-key-for-startup"
+
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
@@ -32,7 +23,6 @@ mybatis-plus:
 server:
   port: 8080
 
-security:
-    jwt:
-      secret: demo-jwt-secret-key-for-spring-security-2026
-      expiration-millis: 7200000
+jwt:
+  secret: demo-jwt-secret-key-for-spring-security-2026
+  expiration-millis: 7200000

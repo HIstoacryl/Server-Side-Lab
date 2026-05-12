@@ -1,4 +1,4 @@
-package com.lanhai.hello_server.vo;
+package com.lanhai.hello_server.model.vo;
 
 import lombok.Data;
 

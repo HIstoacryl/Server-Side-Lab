@@ -3,9 +3,7 @@ package com.lanhai.hello_server.model.dto;
 import lombok.Data;
 
 @Data
-public class ChatRequestDTO {
-    // 会话唯一标识，区分不同对话
+public class ChatReq {
     private String sessionId;
-    // 用户输入的消息
     private String message;
 }

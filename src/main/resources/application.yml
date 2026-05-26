@@ -10,10 +10,12 @@ spring:
     port: 6379
     database: 0
 
-  # 这里加一个假的 API Key，只为启动项目！
   ai:
     dashscope:
-      api-key: "fake-key-for-startup"
+      api-key: "fake-key-for-startup" # 本地启动用，后续替换为真实密钥
+      chat:
+        options:
+          model: qwen-turbo # 通义千问模型，可切换qwen-plus等
 
 mybatis-plus:
   configuration:
